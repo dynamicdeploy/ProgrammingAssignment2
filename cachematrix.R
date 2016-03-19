@@ -32,15 +32,15 @@ cacheSolve <- function(x, ...) {
     i = x$getinv()
     
     # if the inverse is already cached
-    if (!is.null(i)){
+    if (!is.null(i) ){
         # return from the cache
         message("getting cached data")
         return(i)
     }
     
     # else, inverse it 
-    mat.data = x$get()
-    i = solve(mat.data, ...)
+    data <- x$get()
+    i <- solve(data, ...)
     
     # cache the inverse
     x$setinv(i)
@@ -51,19 +51,36 @@ cacheSolve <- function(x, ...) {
 testmatrixinv <- function(mat){
     
     print("Starting matrix performance test!!")
-    t = makeCacheMatrix(mat)
+    t <- makeCacheMatrix(mat)
     
     #without cache
-    start.time = Sys.time()
+    start.time <- Sys.time()
     cacheSolve(t)
-    stopwatch = Sys.time() - start.time
+    stopwatch <- Sys.time() - start.time
     print(stopwatch)
     
     #with cache
-    start.time = Sys.time()
+    start.time <- Sys.time()
     cacheSolve(t)
-    stopwatch = Sys.time() - start.time
+    stopwatch <- Sys.time() - start.time
     print(stopwatch)
+   # print(dim(t$get()))
+    print("Change the matrix")
+    newt<-t$get()
+    newt[1,1]=0.1
+    t$set(newt)
+   # print(t$get()[1,1])
+    print(paste("identical() on mat and newt:", identical(mat,newt)))
+  
+ 
+}
+
+matrixinversetest<-function()
+{
+    set.seed(1010201)
+    r = rnorm(1000000)
+    mat1 = matrix(r, nrow=1000, ncol=1000)
+    testmatrixinv(mat1)
     
     
 }
